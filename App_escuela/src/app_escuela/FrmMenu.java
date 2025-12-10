@@ -38,6 +38,8 @@ public class FrmMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Escuela UAdeO");
+        setBackground(new java.awt.Color(44, 62, 80));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setText("Escuela UAdeO");
@@ -54,7 +56,7 @@ public class FrmMenu extends javax.swing.JFrame {
         btnVerProfesores.setText("Mirar profesores");
         btnVerProfesores.addActionListener(this::btnVerProfesoresActionPerformed);
 
-        btnVerCarrerasMaterias.setText("Mirar carreras y materias");
+        btnVerCarrerasMaterias.setText("Mirar carreras ");
         btnVerCarrerasMaterias.addActionListener(this::btnVerCarrerasMateriasActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -62,35 +64,43 @@ public class FrmMenu extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(21, 21, 21)
                 .addComponent(btnRegAlumno)
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnRegProfesor)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                .addComponent(btnVerAlumnos)
-                .addGap(44, 44, 44)
-                .addComponent(btnVerProfesores)
-                .addGap(47, 47, 47)
-                .addComponent(btnVerCarrerasMaterias)
-                .addGap(28, 28, 28))
+                .addGap(21, 21, 21))
             .addGroup(layout.createSequentialGroup()
-                .addGap(281, 281, 281)
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(258, 258, 258)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(335, 335, 335)
+                        .addComponent(btnVerCarrerasMaterias)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(156, 156, 156)
+                .addComponent(btnVerAlumnos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 244, Short.MAX_VALUE)
+                .addComponent(btnVerProfesores)
+                .addGap(159, 159, 159))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(214, 214, 214)
+                .addGap(177, 177, 177)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 229, Short.MAX_VALUE)
+                .addGap(66, 66, 66)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRegAlumno)
+                    .addComponent(btnRegProfesor))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVerAlumnos)
-                    .addComponent(btnVerProfesores)
-                    .addComponent(btnVerCarrerasMaterias)
-                    .addComponent(btnRegProfesor)
-                    .addComponent(btnRegAlumno))
-                .addGap(47, 47, 47))
+                    .addComponent(btnVerProfesores))
+                .addGap(25, 25, 25)
+                .addComponent(btnVerCarrerasMaterias)
+                .addGap(86, 86, 86))
         );
 
         pack();
@@ -102,8 +112,7 @@ public class FrmMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegAlumnoActionPerformed
 
     private void btnVerAlumnosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerAlumnosActionPerformed
-         FrmAlumno frm = new FrmAlumno();
-    frm.setVisible(true);
+         new FrmVerAlumnos().setVisible(true);
     }//GEN-LAST:event_btnVerAlumnosActionPerformed
 
     private void btnRegProfesorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegProfesorActionPerformed
@@ -117,8 +126,8 @@ public class FrmMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVerProfesoresActionPerformed
 
     private void btnVerCarrerasMateriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerCarrerasMateriasActionPerformed
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "Pantalla de carreras y materias (pendiente)");
+        FrmVerCarreras frm = new FrmVerCarreras();
+frm.setVisible(true);
     }//GEN-LAST:event_btnVerCarrerasMateriasActionPerformed
 
     /**
