@@ -6,18 +6,18 @@ public class Alumno {
     private String ap_pat;
     private String ap_mat;
     private int semestre;
-    private int carrera_id;
+    private String carrera;
 
     public Alumno() {
     }
 
-    public Alumno(int matricula, String nombre_s, String ap_pat, String ap_mat, int semestre, int carrera_id) {
+    public Alumno(int matricula, String nombre_s, String ap_pat, String ap_mat, int semestre, String carrera) {
         this.matricula = matricula;
         this.nombre_s = nombre_s;
         this.ap_pat = ap_pat;
         this.ap_mat = ap_mat;
         this.semestre = semestre;
-        this.carrera_id = carrera_id;
+        this.carrera = carrera;
     }
 
     public int getMatricula() {
@@ -55,10 +55,10 @@ public class Alumno {
         this.semestre = semestre;
     }
 
-    public int getCarrera_id() {
-        return carrera_id;
+    public String getCarrera() {
+        return carrera;
     }
-    public void setCarrera_id(int carrera_id) {
-        this.carrera_id = carrera_id;
+    public void setCarrera(String carrera) {
+        this.carrera = carrera;
     }
 }

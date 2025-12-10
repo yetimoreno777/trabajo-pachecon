@@ -2,12 +2,24 @@ package app_escuela;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
+import java.util.ArrayList;
+import app_escuela.Carrera;
+import app_escuela.CarreraDAO;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+
 
 public class FrmAlumno extends javax.swing.JFrame {
      // ==== VARIABLES DE APOYO ====
+
     private AlumnoDAO alumnoDAO = new AlumnoDAO();
-    private javax.swing.table.DefaultTableModel modelo;
-    
+    private CarreraDAO carreraDAO = new CarreraDAO();
+    private DefaultTableModel modelo;
+
+    private List<Carrera> listaCarreras = new ArrayList<>(); // <--- NUEVO
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmAlumno.class.getName());
 
     /**
@@ -15,6 +27,7 @@ public class FrmAlumno extends javax.swing.JFrame {
      */
     public FrmAlumno() {
         initComponents();
+        cargarCarreras();
         txtMatricula.addKeyListener(new java.awt.event.KeyAdapter() {
         @Override
         public void keyTyped(java.awt.event.KeyEvent e) {
@@ -39,6 +52,28 @@ public class FrmAlumno extends javax.swing.JFrame {
     
     }
     
+    private void cargarCarreras() {
+    cmbCarrera.removeAllItems(); // Limpia el combo
+
+    try {
+        Connection cn = Conexion.getConnection();
+        String sql = "SELECT nombre_car FROM carrera ORDER BY nombre_car";
+        PreparedStatement ps = cn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            cmbCarrera.addItem(rs.getString("nombre_car"));
+        }
+
+        rs.close();
+        ps.close();
+        cn.close();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al cargar carreras: " + e.getMessage());
+    }
+}
+
+    
         private void cargarTabla() {
         // Limpia la tabla
         modelo.setRowCount(0);
@@ -54,7 +89,7 @@ public class FrmAlumno extends javax.swing.JFrame {
                 a.getAp_pat(),
                 a.getAp_mat(),
                 a.getSemestre(),
-                a.getCarrera_id()
+                a.getCarrera()
             };
             modelo.addRow(fila);
         }
@@ -65,8 +100,10 @@ public class FrmAlumno extends javax.swing.JFrame {
         txtApPat.setText("");
         txtApMat.setText("");
         txtSemestre.setText("");
-        txtCarreraId.setText("");
+        cmbCarrera.setSelectedIndex(-1);
         tablaAlumnos.clearSelection();
+        
+        
     }
 
 
@@ -94,7 +131,7 @@ public class FrmAlumno extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtSemestre = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        txtCarreraId = new javax.swing.JTextField();
+        cmbCarrera = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
         btnNuevo = new javax.swing.JButton();
@@ -142,11 +179,12 @@ public class FrmAlumno extends javax.swing.JFrame {
         txtSemestre.addActionListener(this::txtSemestreActionPerformed);
         jPanel1.add(txtSemestre);
 
-        jLabel10.setText("ID Carrera:");
+        jLabel10.setText("Carrera:");
         jPanel1.add(jLabel10);
 
-        txtCarreraId.addActionListener(this::txtCarreraIdActionPerformed);
-        jPanel1.add(txtCarreraId);
+        cmbCarrera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbCarrera.addActionListener(this::cmbCarreraActionPerformed);
+        jPanel1.add(cmbCarrera);
 
         btnGuardar.setText("Guardar");
         btnGuardar.addActionListener(this::btnGuardarActionPerformed);
@@ -173,7 +211,7 @@ public class FrmAlumno extends javax.swing.JFrame {
                 .addComponent(btnGuardar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEliminar)
-                .addGap(66, 66, 66))
+                .addGap(429, 429, 429))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -200,7 +238,7 @@ public class FrmAlumno extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Matrícula", "Nombre", "Ap. Pat", "Ap. Mat", "Semestre", "Carrera ID"
+                "Matrícula", "Nombre", "Ap. Pat", "Ap. Mat", "Semestre", "Carrera"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -211,6 +249,11 @@ public class FrmAlumno extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tablaAlumnos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaAlumnosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tablaAlumnos);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -218,14 +261,14 @@ public class FrmAlumno extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 210, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel1.add(jPanel3);
@@ -246,10 +289,6 @@ public class FrmAlumno extends javax.swing.JFrame {
     private void txtSemestreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSemestreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSemestreActionPerformed
-
-    private void txtCarreraIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCarreraIdActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCarreraIdActionPerformed
 
     private void txtMatriculaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMatriculaActionPerformed
         // TODO add your handling code here:
@@ -276,7 +315,12 @@ public class FrmAlumno extends javax.swing.JFrame {
         String apPat  = txtApPat.getText().trim();
         String apMat  = txtApMat.getText().trim();
         int semestre  = Integer.parseInt(txtSemestre.getText().trim());
-        int carreraId = Integer.parseInt(txtCarreraId.getText().trim());
+        
+        String carrera = (String) cmbCarrera.getSelectedItem();
+        if (carrera == null || carrera.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Selecciona una carrera");
+            return;
+        }
 
         Alumno a = new Alumno();
         a.setMatricula(matricula);
@@ -284,7 +328,8 @@ public class FrmAlumno extends javax.swing.JFrame {
         a.setAp_pat(apPat);
         a.setAp_mat(apMat);
         a.setSemestre(semestre);
-        a.setCarrera_id(carreraId);
+        a.setCarrera(carrera);
+        
 
         if (alumnoDAO.insertar(a)) {
             JOptionPane.showMessageDialog(this, "Alumno guardado correctamente");
@@ -293,7 +338,7 @@ public class FrmAlumno extends javax.swing.JFrame {
         }
 
     } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Matrícula, semestre e ID Carrera deben ser números");
+        JOptionPane.showMessageDialog(this, "Matrícula y semestre deben ser números");
     }
 
           
@@ -320,20 +365,33 @@ public class FrmAlumno extends javax.swing.JFrame {
         String apPat = txtApPat.getText().trim();
         String apMat = txtApMat.getText().trim();
         int semestre = Integer.parseInt(txtSemestre.getText().trim());
-        int carreraId = Integer.parseInt(txtCarreraId.getText().trim());
+        String carrera = (String) cmbCarrera.getSelectedItem();
+    if (carrera == null || carrera.trim().isEmpty()) {
+    JOptionPane.showMessageDialog(this, "Selecciona una carrera");
+    return;
+}
 
-        Alumno a = new Alumno(matricula, nombre, apPat, apMat, semestre, carreraId);
+Alumno a = new Alumno();
+a.setMatricula(matricula);
+a.setNombre_s(nombre);
+a.setAp_pat(apPat);
+a.setAp_mat(apMat);
+a.setSemestre(semestre);
+a.setCarrera(carrera);
 
-        if (alumnoDAO.actualizar(a)) {
-            JOptionPane.showMessageDialog(this, "Alumno actualizado correctamente");
-            cargarTabla();
-            limpiarCampos();
-        }
+      if (alumnoDAO.actualizar(a)) {
+    JOptionPane.showMessageDialog(this, "Alumno actualizado correctamente");
+    cargarTabla();
+    limpiarCampos();
 
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Valores numéricos inválidos (matrícula, semestre, id carrera)");
-    }
-  
+  }
+      }catch (NumberFormatException ex){
+        JOptionPane.showMessageDialog(this,
+                "Valores numéricos inválidos (matrícula o semestre)");
+    
+   
+   
+      }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
@@ -359,17 +417,25 @@ public class FrmAlumno extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void jScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseClicked
-        int fila = tablaAlumnos.getSelectedRow();
+
+    }//GEN-LAST:event_jScrollPane1MouseClicked
+
+    private void tablaAlumnosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaAlumnosMouseClicked
+         int fila = tablaAlumnos.getSelectedRow();
     if (fila >= 0) {
         txtMatricula.setText(tablaAlumnos.getValueAt(fila, 0).toString());
         txtNombre.setText(tablaAlumnos.getValueAt(fila, 1).toString());
         txtApPat.setText(tablaAlumnos.getValueAt(fila, 2).toString());
         txtApMat.setText(tablaAlumnos.getValueAt(fila, 3).toString());
         txtSemestre.setText(tablaAlumnos.getValueAt(fila, 4).toString());
-        txtCarreraId.setText(tablaAlumnos.getValueAt(fila, 5).toString());
-    } 
-   
-    }//GEN-LAST:event_jScrollPane1MouseClicked
+       String carrera = tablaAlumnos.getValueAt(fila, 5).toString();
+        cmbCarrera.setSelectedItem(carrera);
+    }
+    }//GEN-LAST:event_tablaAlumnosMouseClicked
+
+    private void cmbCarreraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCarreraActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbCarreraActionPerformed
 
     /**
      * @param args the command line arguments
@@ -401,6 +467,7 @@ public class FrmAlumno extends javax.swing.JFrame {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
+    private javax.swing.JComboBox<String> cmbCarrera;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -416,7 +483,6 @@ public class FrmAlumno extends javax.swing.JFrame {
     private javax.swing.JTable tablaAlumnos;
     private javax.swing.JTextField txtApMat;
     private javax.swing.JTextField txtApPat;
-    private javax.swing.JTextField txtCarreraId;
     private javax.swing.JTextField txtMatricula;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtSemestre;
